@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+import asyncio
+import logging
+import time
+import os
+
+import yaml
+
+from jabber_module import MSG2JBR, Line
+from feed_parser import RSS2MSG
+from dl_module import YT2DL
+
+
+def load_config(path):
+    if not os.path.exists(path):
+        print('configuration file {} does not exist'.format(path))
+        raise SystemExit
+    base_config = {
+        'loglevel': 'DEBUG',
+        'update_interval': 30,
+        'download_command': 'echo "download_command was not set but called for {url}"',
+        'users': [],
+        'feeds': {}
+        }
+    with open(path, 'r') as conffile:
+        try:
+            config = yaml.load(conffile, Loader=yaml.FullLoader)
+            base_config.update(config)
+        except Exception as e:
+            print('failed to parse configuration file')
+            print(e)
+            raise SystemExit
+    return base_config
+
+
+async def main():
+
+    config = load_config('config.yml')
+
+    log_level = getattr(logging, config['loglevel'])
+    log_format = '%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s'
+    datefmt = '%Y/%m/%d %H:%M:%S'
+    logging.basicConfig(level=log_level, format=log_format, datefmt=datefmt)
+
+    jbr = MSG2JBR(config.get('xmpp_username'), config.get('xmpp_pass'))
+    rss = RSS2MSG(config['feeds'], config.get('db_path', ':memory:'))
+    dl = YT2DL(config['download_command'])
+
+    while(1):
+        records_by_feed = rss.get_new_records()
+        for username, user in config['users'].items():
+            JID = user.get('xmpp_username')
+
+            for (feed_name, subbed_feed) in user['feeds'].items():
+                if len(records_by_feed[feed_name]) == 0:
+                    continue
+                for record in records_by_feed[feed_name]:
+                    for action in subbed_feed['actions']:
+                        JID = user.get('xmpp_username')
+
+                        if action == 'send_any' or (action == 'send_unarchived' and record.unarchived):
+                            text = record.format_record(user.get('timezone_offset', 0))
+                            if JID is not None:
+                                jbr.to_be_send(Line(JID, text))
+                            else:
+                                logging.warning('asked to send message for user {} without JID'.format(username))
+
+                        if action == 'download_any' or (action == 'download_unarchived' and record.unarchived):
+                            if subbed_feed.get('send_errors'):
+                                error_message = 'downloader returned non-zero for [{}] {}: {}'.format(feed_name, record.video_id, record.title)
+                                on_failure = lambda line=Line(JID, error_message): jbr.to_be_send(line)
+                            else:
+                                on_failure = lambda: None
+                            save_path = subbed_feed.get('save_path') # if None file will be saved in current directory 
+                            url = record.link
+                            dl.add(url, save_path, on_failure)
+                            
+                        line1 = "for {} doing {} in feed {} on record [{}] {}"
+                        logging.info(line1.format(username, action, feed_name, record.video_id, record.title))
+
+        try:
+            await jbr.asend_pending()
+        except Exception as e:
+            logging.warning('sending jabber messages failed with exception: {}'.format(e))
+
+        await asyncio.sleep(config['update_interval'] * 60)
+
+if __name__ == "__main__":
+    try:
+        asyncio.get_event_loop().run_until_complete(main())
+    except KeyboardInterrupt:
+        logging.info('stopping on user command')

@@ -1,0 +1,43 @@
+loglevel: "DEBUG"
+db_path: "db.sqlite"
+xmpp_username: "bot@example.com/rss"
+xmpp_pass: "bot_password"
+update_interval: 30
+download_command: "ytarchive.py --threads 2 --add-metadata --wait --merge --save --thumbnail {url} best"
+users:
+  username1:
+    feeds:
+      feed1:
+        actions:
+          - download_any
+        save_path: "/home/username1/video/feed1"
+  username2:
+    xmpp_username: "username2@exmple.com"
+    timezone_offset: -7
+    feeds:
+      feed1:
+        actions:
+          - send_any
+          - download_any
+        save_path: "/home/username2/video/feed1"
+        send_errors: true
+      feed2:
+        actions:
+          - send_unarchived
+          - download_any
+        save_path: "/home/username2/video/feed2"
+      feed3:
+        actions:
+          - send_any
+
+feeds:
+  feed1: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCxxxxxxxxxxxxxxxxxxxxxx'
+  feed2: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCxxxxxxxxxxxxxxxxxxxxxx'
+  feed3: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCxxxxxxxxxxxxxxxxxxxxxx'
+
+actions:
+  - none
+  - send_any
+  - send_unarchived
+  - download_any
+  - download_unarchived
