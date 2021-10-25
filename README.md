@@ -1,11 +1,10 @@
-This script monitors RSS feeds and can send new entries as jabber messages or execute specific command on then.
-It designed specifically with Youtube RSS in mind, but might also work with other feeds.
+This script monitors RSS feeds and can send new entries as jabber messages or execute pre-defined command against links in new messages on the feed. It designed specifically with Youtube RSS in mind, but might also work with other feeds.
 
 ## Installation
 
 It should work with Python version 3.6 and higher.
 
-Install dependencies (second is used by jabber module and can be skipped if only downloading links is required):
+Install dependencies (aioxmpp is used by jabber module and can be skipped if only downloading links is required):
 
 ```bash
 pip3 install --user pyyaml
@@ -56,7 +55,7 @@ users:
 Possible options for specific user:
 
 - `xmpp_username`: JID to send messages about feeds listed in actions for this user
-- `timezone_offset`: used to recalculate timestamps in jabber message if any. Use when script runs in different timezone
+- `timezone_offset`: used to recalculate timestamps to local time in jabber messages. All timestamps are internally stored in UTC
 
 ```yaml
 users:
