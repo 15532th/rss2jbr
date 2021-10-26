@@ -94,3 +94,10 @@ Possible `actions`:
 - `send_unarchived`: same as above, but only if title has `archive` in it
 - `download_any`: start downlad subprocess for an url from new entry in RSS feed
 - `download_unarchived`: same as above, but only if title has `archive` in it
+
+## Running
+
+Start `rss2jbr` module with your python interpreter.
+```sh
+python3 rss2jbr
+```
