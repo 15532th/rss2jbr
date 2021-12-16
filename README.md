@@ -23,6 +23,7 @@ Settings are stored in `YAML` format in `config.yml`. As a starting poing, `conf
 - `loglevel`: how detailed script messages should be. Can be "DEBUG", "INFO" or "WARNING"
 - `db_path`: to preserve state between runs, all messages from RSS feeds are stored in a file. Can be ommited.
 - `update_interval`: how often RSS feeds should be updated in minutes.
+- `send_interval`: how often pending Jabber notifications will be send in minutes.
 - `xmpp_username` and `xmpp_pass`: Jabber credentials to send notifications from
 - `download_command`: command that will be executed to download url from feed. The string will be split on whitespaces and passed to subprocess modele, so don't use anything shell-specific like pipes. Placeholder `{url}` will be replaced with url field from RSS feed message.
 

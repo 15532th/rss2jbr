@@ -3,6 +3,7 @@ db_path: "db.sqlite"
 xmpp_username: "bot@example.com/rss"
 xmpp_pass: "bot_password"
 update_interval: 30
+send_interval: 1
 download_command: "ytarchive.py --threads 2 --add-metadata --wait --merge --save --thumbnail {url} best"
 users:
   username1:
