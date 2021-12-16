@@ -47,7 +47,7 @@ class Record():
     def is_unarchived(self):
         patterns = ['archive', 'アーカイブ']
         for pattern in patterns:
-            if pattern in self.title:
+            if pattern in self.title.lower():
                 return True
         return False
 
