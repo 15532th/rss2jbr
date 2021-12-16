@@ -17,6 +17,7 @@ def load_config(path):
     base_config = {
         'loglevel': 'DEBUG',
         'update_interval': 30,
+        'send_interval': 1,
         'download_command': 'echo "download_command was not set but called for {url}"',
         'users': [],
         'feeds': {}
@@ -31,6 +32,14 @@ def load_config(path):
             raise SystemExit
     return base_config
 
+async def jabber_task(jbr, send_interval):
+    while(1):
+        try:
+            await jbr.asend_pending()
+        except Exception as e:
+            logging.warning('sending jabber messages failed with exception: {}'.format(e))
+        await asyncio.sleep(send_interval * 60)
+
 
 async def main():
 
@@ -44,6 +53,8 @@ async def main():
     jbr = MSG2JBR(config.get('xmpp_username'), config.get('xmpp_pass'))
     rss = RSS2MSG(config['feeds'], config.get('db_path', ':memory:'))
     dl = YT2DL(config['download_command'])
+
+    asyncio.get_event_loop().create_task(jabber_task(jbr, config['send_interval']))
 
     while(1):
         records_by_feed = rss.get_new_records()
@@ -76,11 +87,6 @@ async def main():
 
                         line1 = "for {} doing {} in feed {} on record [{}] {}"
                         logging.info(line1.format(username, action, feed_name, record.video_id, record.title))
-
-        try:
-            await jbr.asend_pending()
-        except Exception as e:
-            logging.warning('sending jabber messages failed with exception: {}'.format(e))
 
         await asyncio.sleep(config['update_interval'] * 60)
 
