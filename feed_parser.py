@@ -74,9 +74,10 @@ class Record():
 
 class RSS2MSG():
 
-    def __init__(self, feeds, db_path=':memory:'):
+    def __init__(self, feeds, db_path=':memory:', ua=''):
         '''entries parsed from `feed_links` in `feeds` will be put in table `records`'''
         self.feeds = feeds
+        self.ua = ua
         self.db = RecordDB(db_path)
         db_size = self.db.get_size()
         logging.info('{} records in DB'.format(db_size))
@@ -85,7 +86,7 @@ class RSS2MSG():
 
     def get_feed(self, link):
         try:
-            feed = feedparser.parse(link)
+            feed = feedparser.parse(link, agent=self.ua)
             if feed.status == 200:
                 return feed
             else:

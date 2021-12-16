@@ -21,6 +21,7 @@ Settings are stored in `YAML` format in `config.yml`. As a starting poing, `conf
 ### Common options:
 - 
 - `loglevel`: how detailed script messages should be. Can be "DEBUG", "INFO" or "WARNING"
+- `ua`: useragent to make requests with. If not specified default from urllib is used.
 - `db_path`: to preserve state between runs, all messages from RSS feeds are stored in a file. Can be ommited.
 - `update_interval`: how often RSS feeds should be updated in minutes.
 - `send_interval`: how often pending Jabber notifications will be send in minutes.
