@@ -10,17 +10,16 @@ except ImportError:
 
 class MSG2JBR():
 
-
     @staticmethod
     async def asend(msg, user, passwd, recepient):
         '''send string or list of strings msg to recepient using user/passwd as credentials'''
         if msg == []:
             return
         if isinstance(msg, str):
-            msg = [msg,]
+            msg = [msg, ]
         client = aioxmpp.PresenceManagedClient(aioxmpp.JID.fromstr(user), aioxmpp.make_security_layer(passwd))
         async with client.connected() as stream:
-            for line in msg: 
+            for line in msg:
                 message = aioxmpp.Message(to=aioxmpp.JID.fromstr(recepient), type_=aioxmpp.MessageType.CHAT)
                 message.body[None] = line
                 await client.send(message)
@@ -47,7 +46,7 @@ class MSG2JBR():
         This script relies on logging.basicConfig() to set default
         logger level and format, so there is no need to pass
         these settings between modules.
- 
+
         While aioxmpp.Client() accepts `logger` argument, allowing
         to specify loglevel, some underlying modules and libraries
         just create loggers by themself, using default loglevel
@@ -82,7 +81,6 @@ class MSG2JBR():
 
 
 class Line():
-
 
     def __init__(self, recepient, message):
         self.recepient = recepient
