@@ -8,7 +8,6 @@ URL_PLACEHOLDER = '{url}'
 
 class YT2DL():
 
-
     def __init__(self, download_command):
         self.downloads = {}
         self.command = download_command

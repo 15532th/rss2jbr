@@ -8,7 +8,7 @@ from html.parser import HTMLParser
 
 '''
     Gets timestamp of date video scheduled to from video id.
-    Uses parts of code from ytarchive v0.2.1 
+    Uses parts of code from ytarchive v0.2.1
     https://github.com/Kethsar/ytarchive
 '''
 
@@ -25,16 +25,14 @@ def logwarn(msg):
 
 # Download data from the given URL and return it as unicode text
 def download_as_text(url):
-	data = b""
-
-	try:
-		with urllib.request.urlopen(url, timeout=5) as resp:
-			data = resp.read()
-	except Exception as err:
-		logwarn("Failed to retrieve data from {0}: {1}".format(url, err))
-		return None
-	
-	return data.decode("utf-8")
+    data = b""
+    try:
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            data = resp.read()
+    except Exception as err:
+        logwarn("Failed to retrieve data from {0}: {1}".format(url, err))
+        return None
+    return data.decode("utf-8")
 
 
 class WatchPageParser(HTMLParser):
@@ -108,9 +106,9 @@ def get_sched_time(video_id):
         return sched_time
 
 def get_sched_isoformat(video_id):
-        scheduled_timestamp = get_sched_time(video_id)
-        if scheduled_timestamp:
-            return datetime.datetime.fromtimestamp(scheduled_timestamp, tz=datetime.timezone.utc).isoformat(timespec='seconds')
+    scheduled_timestamp = get_sched_time(video_id)
+    if scheduled_timestamp:
+        return datetime.datetime.fromtimestamp(scheduled_timestamp, tz=datetime.timezone.utc).isoformat(timespec='seconds')
 
-        else:
-            return None
+    else:
+        return None

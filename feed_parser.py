@@ -1,4 +1,3 @@
-import time
 import datetime
 import logging
 import sqlite3
@@ -9,7 +8,6 @@ import yt_info
 
 
 class Record():
-
 
     def __init__(self, **attrs):
         # attrs.get() used for youtube-specific fields
@@ -76,7 +74,6 @@ class Record():
 
 class RSS2MSG():
 
-
     def __init__(self, feeds, db_path=':memory:'):
         '''entries parsed from `feed_links` in `feeds` will be put in table `records`'''
         self.feeds = feeds
@@ -89,7 +86,7 @@ class RSS2MSG():
     def get_feed(self, link):
         try:
             feed = feedparser.parse(link)
-            if feed.status == 200: 
+            if feed.status == 200:
                 return feed
             else:
                 raise Exception('got code {} while fetching {}'.format(feed.status, link))
@@ -100,11 +97,11 @@ class RSS2MSG():
     def parse_entries(self, feed):
         records = []
         for entry in feed['entries']:
-            records.append(Record(**entry)) 
+            records.append(Record(**entry))
         return records
 
     def get_new_records(self):
-        records_by_feed = {x:list() for x in self.feeds.keys()}
+        records_by_feed = {x: list() for x in self.feeds.keys()}
         for feedname, link in self.feeds.items():
             feed = self.get_feed(link)
             if feed is None:
@@ -122,12 +119,11 @@ class RSS2MSG():
                     additional_fields = {'feed_name': feedname, 'parsed_at': now}
                     row = record.convert_to_row(additional_fields)
                     self.db.insert_row(row)
-                    
+
         return records_by_feed
 
 
 class RecordDB():
-
 
     def __init__(self, db_path):
         self.db = sqlite3.connect(db_path)

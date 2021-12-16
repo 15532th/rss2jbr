@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
 import logging
-import time
 import os
 
 import yaml
@@ -21,7 +20,7 @@ def load_config(path):
         'download_command': 'echo "download_command was not set but called for {url}"',
         'users': [],
         'feeds': {}
-        }
+    }
     with open(path, 'r') as conffile:
         try:
             config = yaml.load(conffile, Loader=yaml.FullLoader)
@@ -71,10 +70,10 @@ async def main():
                                 on_failure = lambda line=Line(JID, error_message): jbr.to_be_send(line)
                             else:
                                 on_failure = lambda: None
-                            save_path = subbed_feed.get('save_path') # if None file will be saved in current directory 
+                            save_path = subbed_feed.get('save_path')  # if None file will be saved in current directory
                             url = record.link
                             dl.add(url, save_path, on_failure)
-                            
+
                         line1 = "for {} doing {} in feed {} on record [{}] {}"
                         logging.info(line1.format(username, action, feed_name, record.video_id, record.title))
 
