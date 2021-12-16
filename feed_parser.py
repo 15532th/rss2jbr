@@ -50,7 +50,7 @@ class Record():
         return False
 
     def format_date(self, datestring, timezone_offset=0):
-        # remove semicolon from timezone part of string because %z don't have it
+        # remove semicolon from timezone part of string because %z doesn't have it
         datestring = ''.join([datestring[i] for i in range(len(datestring)) if i != 22])
         tz = datetime.timezone(datetime.timedelta(hours=timezone_offset))
         dt = datetime.datetime.strptime(datestring, '%Y-%m-%dT%H:%M:%S%z').astimezone(tz)
