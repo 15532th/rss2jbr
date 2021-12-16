@@ -12,6 +12,7 @@ class Record():
 
 
     def __init__(self, **attrs):
+        # attrs.get() used for youtube-specific fields
         self.link = attrs.get('link')
         self.title = attrs['title']
         self.published = attrs['published']
@@ -21,6 +22,10 @@ class Record():
         self.summary = attrs['summary']
         self.unarchived = self.is_unarchived()
         self._scheduled = ''
+        try:
+            self.views = int(attrs['media_statistics']['views'])
+        except:
+            self.views = None
 
     @property
     def scheduled(self):
@@ -129,12 +134,12 @@ class RecordDB():
     def __init__(self, db_path):
         self.db = sqlite3.connect(db_path)
         self.cursor = self.db.cursor()
-        record_structure = 'parsed_at datetime, feed_name text, author text, video_id text, link text, title text, summary text, published datetime, updated datetime, scheduled datetime DEFAULT NULL, PRIMARY KEY(video_id, updated)'
+        record_structure = 'parsed_at datetime, feed_name text, author text, video_id text, link text, title text, summary text, published datetime, updated datetime, scheduled datetime DEFAULT NULL, views intefer, PRIMARY KEY(video_id, updated)'
         self.cursor.execute('CREATE TABLE IF NOT EXISTS records ({})'.format(record_structure))
         self.db.commit()
 
     def insert_row(self, row):
-        row_structure = ':parsed_at, :feed_name, :author, :video_id, :link, :title, :summary, :published, :updated, :scheduled'
+        row_structure = ':parsed_at, :feed_name, :author, :video_id, :link, :title, :summary, :published, :updated, :scheduled, :views'
         sql = "INSERT INTO records VALUES({})".format(row_structure)
         self.cursor.execute(sql, row)
         self.db.commit()
