@@ -78,7 +78,7 @@ def get_player_response(video_id):
 # return timestamp of stream scheduled start time if possible, otherwise None
 def get_sched_time(video_id):
     if not video_id:
-        logwarn("video_id is".format(video_id))
+        logwarn("bad video_id: {0}".format(video_id))
         return None
 
     player_response = get_player_response(video_id)
