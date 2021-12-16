@@ -21,22 +21,22 @@ class Record():
         self.video_id = attrs.get('yt_videoid')
         self.summary = attrs['summary']
         self.unarchived = self.is_unarchived()
-        self._scheduled = ''
         try:
             self.views = int(attrs['media_statistics']['views'])
         except:
             self.views = None
+        if self.views == 0:
+            self.scheduled = self.get_scheduled()
+        else:
+            self.scheduled = None
 
-    @property
-    def scheduled(self):
-        if self._scheduled == '':
-            try:
-                self._scheduled = yt_info.get_sched_isoformat(self.video_id)
-            except:
-                logging.exception('Exception while trying to get "scheduled" field, skipping')
-                self._scheduled = None
-        return self._scheduled
-
+    def get_scheduled(self):
+        try:
+            scheduled = yt_info.get_sched_isoformat(self.video_id)
+        except:
+            logging.exception('Exception while trying to get "scheduled" field, skipping')
+            scheduled = None
+        return scheduled
 
     def __eq__(self, other):
         return self.link == other.link
@@ -67,12 +67,10 @@ class Record():
         template = '{}\n{}\npublished by {} at {}'
         return template.format(self.link, self.title, self.author, self.format_date(self.published, timezone_offset)) + scheduled_time
 
-    def convert_to_row(self, additional_fields, with_scheduled=True):
+    def convert_to_row(self, additional_fields):
         row = {}
         row.update(self.__dict__)
         row.update(additional_fields)
-        if with_scheduled:
-            row['scheduled'] = self.scheduled
         return row
 
 
