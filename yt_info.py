@@ -71,7 +71,11 @@ def get_player_response(video_id):
         logwarn(f'Player response not found in the watch page of {video_id}')
         return None
 
-    player_response = json.loads(watch_parser.player_response_text)
+    try:
+        player_response = json.loads(watch_parser.player_response_text)
+    except Exception as e:
+        logwarn(f'Failed to parse player response json from {video_id}')
+        return None
 
     return player_response
 
