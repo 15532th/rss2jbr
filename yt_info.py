@@ -61,14 +61,14 @@ def get_player_response(video_id):
 
     watch_html = download_as_text(WATCH_URL.format(video_id))
     if watch_html is None or len(watch_html) == 0:
-        logwarn("Watch page did not return any data. What?")
+        logwarn(f'Watch page {video_id} did not return any data')
         return None
 
     watch_parser = WatchPageParser()
     watch_parser.feed(watch_html)
 
     if len(watch_parser.player_response_text) == 0:
-        logwarn("Player response not found in the watch page.")
+        logwarn(f'Player response not found in the watch page of {video_id}')
         return None
 
     player_response = json.loads(watch_parser.player_response_text)
