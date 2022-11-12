@@ -12,8 +12,16 @@ from dl_module import YT2DL
 
 def load_config(path):
     if not os.path.exists(path):
-        print('configuration file {} does not exist'.format(path))
+        print('Configuration file {} does not exist'.format(path))
         raise SystemExit
+    try:
+        with open(path, 'rt') as config_file:
+            config = yaml.load(config_file, Loader=yaml.FullLoader)
+    except Exception as e:
+        print('Failed to parse configuration file:')
+        print(e)
+        raise SystemExit
+
     base_config = {
         'loglevel': 'DEBUG',
         'update_interval': 30,
@@ -22,14 +30,7 @@ def load_config(path):
         'users': [],
         'feeds': {}
     }
-    with open(path, 'r') as conffile:
-        try:
-            config = yaml.load(conffile, Loader=yaml.FullLoader)
-            base_config.update(config)
-        except Exception as e:
-            print('failed to parse configuration file')
-            print(e)
-            raise SystemExit
+    base_config.update(config)
     return base_config
 
 async def jabber_task(jbr, send_interval):
