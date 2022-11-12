@@ -21,14 +21,14 @@ class Record():
         self.unarchived = self.is_unarchived()
         try:
             self.views = int(attrs['media_statistics']['views'])
-        except:
+        except Exception:
             self.views = None
 
     def get_scheduled(self):
         if self.views == 0:
             try:
                 scheduled = yt_info.get_sched_isoformat(self.video_id)
-            except:
+            except Exception:
                 logging.exception('Exception while trying to get "scheduled" field, skipping')
                 scheduled = None
         else:
