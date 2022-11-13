@@ -65,9 +65,9 @@ users:
     xmpp_username: "username1@exmple.com"
     timezone_offset: -7
     feeds:
-      feed1:
+      - feed1:
         ...
-      feed2:
+      - feed2:
         ...
 ```
 
@@ -83,15 +83,15 @@ users:
   username1:
     xmpp_username: "username1@exmple.com"
     feeds:
-      feed1:
-        actions:
-          - send_any
-          - download_any
-        filter:
-          - "archived"
-          - "sing"
-        save_path: "absolute/path/to/store/files/"
-        send_errors: true
+      - feed1:
+          actions:
+            - send_any
+            - download_any
+          filter:
+            - "archive"
+            - "sing"
+          save_path: "absolute/path/to/store/files/"
+          send_errors: true
 ```
 
 Possible `actions`:
@@ -100,6 +100,25 @@ Possible `actions`:
 - `send_unarchived`: same as above, but only if title has `archive` in it
 - `download_any`: start downlad subprocess for an url from new entry in RSS feed
 - `download_unarchived`: same as above, but only if title has `archive` in it
+
+Note, that it's possible to have multiple sets of feed options for a single link by specifying same feed twice:
+
+```yaml
+users:
+  username1:
+    xmpp_username: "username1@exmple.com"
+    feeds:
+      - feed1:
+          actions:
+            - send_any
+      - feed1:
+          filter:
+            - "unarchived"
+          actions:
+            - download_any
+          save_path: "absolute/path/to/store/files/"
+```
+
 
 ## Running
 

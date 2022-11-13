@@ -72,8 +72,13 @@ async def main():
         records_by_feed = rss.get_new_records()
         for username, user in config['users'].items():
             JID = user.get('xmpp_username')
-
-            for (feed_name, subbed_feed) in user['feeds'].items():
+            user_feeds = user['feeds']
+            if isinstance(user_feeds, dict):
+                # handle old config format with "feeds" being a dictionary
+                # and only allowing one set of settings of feed per user
+                user_feeds = [{name: data} for name, data in user_feeds.items()]
+            for user_feed in user_feeds:
+                feed_name, subbed_feed = user_feed.popitem()
                 if len(records_by_feed[feed_name]) == 0:
                     continue
                 for record in records_by_feed[feed_name]:
