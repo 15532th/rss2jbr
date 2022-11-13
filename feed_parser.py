@@ -52,6 +52,30 @@ class Record():
                 return True
         return False
 
+    def has_text(self, patterns, field='all'):
+        if isinstance(patterns, str):
+            patterns = [patterns]
+        fields = []
+        if field == 'all':
+            for text in self.__dict__.values():
+                if isinstance(text, str):
+                    fields.append(text)
+        else:
+            text = getattr(self, field, None)
+            if text is None:
+                logging.warning(f'attempt to search for text in non-existingfield {field} in rss feed entry')
+                return False
+            if not isinstance(text, str):
+                logging.warning(f'attempt to search in not-text field {field} of rss feed entry')
+                return False
+            fields.append(text)
+        for text in fields:
+            for pattern in patterns:
+                if str(pattern).lower() in text.lower():
+                    return True
+        else:
+            return False
+
     def format_date(self, datestring, timezone_offset=0):
         # remove semicolon from timezone part of string because %z doesn't have it
         datestring = ''.join([datestring[i] for i in range(len(datestring)) if i != 22])
