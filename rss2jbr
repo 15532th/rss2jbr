@@ -78,7 +78,7 @@ async def main():
                 # and only allowing one set of settings of feed per user
                 user_feeds = [{name: data} for name, data in user_feeds.items()]
             for user_feed in user_feeds:
-                feed_name, subbed_feed = user_feed.popitem()
+                feed_name, subbed_feed = list(user_feed.items())[0]
                 if len(records_by_feed[feed_name]) == 0:
                     continue
                 for record in records_by_feed[feed_name]:
