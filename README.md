@@ -76,6 +76,7 @@ Options for `feeds` section of specific user:
 - `save_path`: work directory for `download_command` subprocess when called for this specific feed and user
 - `send_errors`: send Jabber message to user if `download_command` subprocess finished with non-zero exit code
 - `actions`: how to handle new entries on RSS feed for specific user
+- `filter`: only process entry if it has specified pattern in it, case-insensitive
 
 ```yaml
 users:
@@ -86,6 +87,9 @@ users:
         actions:
           - send_any
           - download_any
+        filter:
+          - "archived"
+          - "sing"
         save_path: "absolute/path/to/store/files/"
         send_errors: true
 ```

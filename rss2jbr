@@ -77,6 +77,10 @@ async def main():
                 if len(records_by_feed[feed_name]) == 0:
                     continue
                 for record in records_by_feed[feed_name]:
+                    filter_pattern = subbed_feed.get('filter')
+                    if filter_pattern is not None:
+                        if not record.has_text(filter_pattern):
+                            continue
                     for action in subbed_feed['actions']:
                         JID = user.get('xmpp_username')
 
