@@ -42,6 +42,9 @@ class Record():
     def __str__(self):
         return str(self.__dict__)
 
+    def __repr__(self):
+        return f'Record({self.updated=}, {self.author=}, {self.title=})'
+
     def is_unarchived(self):
         patterns = ['archive', 'アーカイブ']
         for pattern in patterns:
