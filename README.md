@@ -19,7 +19,6 @@ Clone or unzip this repo to appropriate folder.
 Settings are stored in `YAML` format in `config.yml`. As a starting poing, `config.yml.example` is provided. Rename it to `config.yml` and adapt for your needs.
 
 ### Common options:
-- 
 - `loglevel`: how detailed script messages should be. Can be "DEBUG", "INFO" or "WARNING"
 - `ua`: useragent to make requests with. If not specified default from urllib is used.
 - `db_path`: to preserve state between runs, all messages from RSS feeds are stored in a file. Can be ommited.
