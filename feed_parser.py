@@ -21,7 +21,7 @@ class Record():
         self.unarchived = self.is_unarchived()
         try:
             self.views = int(attrs['media_statistics']['views'])
-        except Exception:
+        except (ValueError, KeyError, TypeError):
             self.views = None
 
     def get_scheduled(self):
