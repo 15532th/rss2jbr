@@ -114,8 +114,14 @@ class RSS2MSG():
     def get_feed(self, link):
         try:
             feed = feedparser.parse(link, agent=self.ua)
-            if feed.status == 200:
+            status = getattr(feed, 'status', None)
+            if status == 200:
                 return feed
+            elif status is None:
+                from pprint import pformat
+                logging.debug(f'feed for {link} has no status, probably broken:')
+                logging.debug(pformat(feed))
+                raise Exception(f'got broken feed while fetching {link}')
             else:
                 raise Exception('got code {} while fetching {}'.format(feed.status, link))
         except Exception as e:
