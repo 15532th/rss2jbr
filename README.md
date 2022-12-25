@@ -4,15 +4,13 @@ This script monitors RSS feeds and can send new entries as Jabber messages or ex
 
 It should work with Python version 3.6 and higher.
 
-Install dependencies (aioxmpp is optional and only used by Jabber module):
+Clone or unzip this repo to appropriate folder.
+
+Install dependencies from requirements file:
 
 ```bash
-pip3 install --user pyyaml
-pip3 install --user feedparser
-pip3 install --user aioxmpp
+pip3 install --user -r requirements.txt
 ```
-
-Clone or unzip this repo to appropriate folder.
 
 ## Configuration
 
