@@ -93,11 +93,11 @@ class Record():
         template = '{}\n{}\npublished by {} at {}'
         return template.format(self.link, self.title, self.author, self.format_date(self.published, timezone_offset)) + scheduled_time
 
-    def convert_to_row(self, additional_fields):
-        row = {}
-        row.update(self.__dict__)
-        row.update(additional_fields)
-        return row
+    def as_dictionary(self, additional_fields):
+        record_dict = {}
+        record_dict.update(self.__dict__)
+        record_dict.update(additional_fields)
+        return record_dict
 
 
 class RSS2MSG():
@@ -154,7 +154,7 @@ class RSS2MSG():
                     record.get_scheduled()
                     now = datetime.datetime.now(tz=datetime.timezone.utc).isoformat(timespec='seconds')
                     additional_fields = {'feed_name': feedname, 'parsed_at': now}
-                    row = record.convert_to_row(additional_fields)
+                    row = record.as_dictionary(additional_fields)
                     self.db.insert_row(row)
 
         return records_by_feed
