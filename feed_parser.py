@@ -72,6 +72,7 @@ class Record():
         for text in fields:
             for pattern in patterns:
                 if str(pattern).lower() in text.lower():
+                    logging.debug(f'Found pattern "{pattern}" in record ' + self.__repr__())
                     return True
         else:
             return False
