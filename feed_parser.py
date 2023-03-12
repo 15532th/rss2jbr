@@ -25,7 +25,7 @@ class Record():
         except (ValueError, KeyError, TypeError):
             self.views = None
 
-    def get_scheduled(self):
+    def check_scheduled(self):
         if self.views == 0:
             try:
                 scheduled = yt_info.get_sched_isoformat(self.video_id)
@@ -35,7 +35,6 @@ class Record():
         else:
             scheduled = None
         self.scheduled = scheduled
-        return scheduled
 
     def __eq__(self, other):
         return self.link == other.link
@@ -156,13 +155,13 @@ class RSS2MSG():
             for record in records:
                 if not self.db.row_exists(record.video_id):
                     # only first record for given video_id is send to actions
-                    record.get_scheduled()
+                    record.check_scheduled()
                     records_by_feed[feedname].append(record)
                     template = '{} {:<8} [{}] {}'
                     logging.info(template.format(record.format_date(record.published), feedname, record.video_id, record.title))
                 if not self.db.row_exists(record.video_id, record.updated):
                     # every new record for given video_id will be stored in db
-                    record.get_scheduled()
+                    record.check_scheduled()
                     now = datetime.datetime.now(tz=datetime.timezone.utc).isoformat(timespec='seconds')
                     additional_fields = {'feed_name': feedname, 'parsed_at': now}
                     row = record.as_dictionary(additional_fields)
