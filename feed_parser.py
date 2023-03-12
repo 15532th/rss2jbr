@@ -161,7 +161,17 @@ class RSS2MSG():
                     logging.info(template.format(record.format_date(record.published), feedname, record.video_id, record.title))
                 if not self.db.row_exists(record.video_id, record.updated):
                     # every new record for given video_id will be stored in db
-                    record.check_scheduled()
+                    previous = self.get_latest_record(record.video_id)
+                    if previous is not None and previous.scheduled is not None:
+                        logging.debug(f'{record.video_id=} has last {previous.scheduled=}, updating')
+                        record.check_scheduled()
+                        if record.scheduled is not None:
+                            if record.scheduled < previous.scheduled:
+                                msg = 'In feed {} record [{}] {} rescheduled back from {} to {}'
+                                logging.warning(msg.format(feedname, record.video_id, record.title, previous.scheduled, record.scheduled))
+                                # treat rescheduled records as new if scheduled time is earlier than before
+                                # to allow action run on time, though it will run second time later
+                                records_by_feed[feedname].append(record)
                     now = datetime.datetime.now(tz=datetime.timezone.utc).isoformat(timespec='seconds')
                     additional_fields = {'feed_name': feedname, 'parsed_at': now}
                     row = record.as_dictionary(additional_fields)
