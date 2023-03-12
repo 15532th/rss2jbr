@@ -19,6 +19,7 @@ class Record():
         self.video_id = attrs.get('yt_videoid')
         self.summary = attrs['summary']
         self.unarchived = self.is_unarchived()
+        self.scheduled = attrs.get('scheduled')
         try:
             self.views = int(attrs['media_statistics']['views'])
         except (ValueError, KeyError, TypeError):
@@ -132,8 +133,18 @@ class RSS2MSG():
     def parse_entries(self, feed):
         records = []
         for entry in feed['entries']:
+            video_id = entry.get('yt_videoid')
+            if video_id is not None:
+                entry['video_id'] = video_id
             records.append(Record(**entry))
         return records
+
+    def get_latest_record(self, video_id):
+        latest_row = self.db.select_latest(video_id)
+        if latest_row is not None:
+            return Record(**dict(latest_row))
+        else:
+            return None
 
     def get_new_records(self):
         records_by_feed = {x: list() for x in self.feeds.keys()}
@@ -164,6 +175,7 @@ class RecordDB():
 
     def __init__(self, db_path):
         self.db = sqlite3.connect(db_path)
+        self.db.row_factory = sqlite3.Row
         self.cursor = self.db.cursor()
         record_structure = 'parsed_at datetime, feed_name text, author text, video_id text, link text, title text, summary text, published datetime, updated datetime, scheduled datetime DEFAULT NULL, views intefer, PRIMARY KEY(video_id, updated)'
         self.cursor.execute('CREATE TABLE IF NOT EXISTS records ({})'.format(record_structure))
@@ -183,6 +195,12 @@ class RecordDB():
         keys = {'video_id': video_id, 'updated': updated}
         self.cursor.execute(sql, keys)
         return bool(self.cursor.fetchone())
+
+    def select_latest(self, video_id):
+        sql = "SELECT * FROM records WHERE video_id=:video_id ORDER BY updated DESC LIMIT 1"
+        keys = {'video_id': video_id}
+        self.cursor.execute(sql, keys)
+        return self.cursor.fetchone()
 
     def get_size(self):
         sql = 'SELECT COUNT(1) FROM records'
