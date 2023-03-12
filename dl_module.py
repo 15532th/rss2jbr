@@ -29,7 +29,7 @@ class YT2DL():
                 logging.warning('download directory {} does not exist, creating'.format(save_path))
                 os.makedirs(save_path)
         if self.downloads.get(url) is None:
-            self.downloads[url] = asyncio.get_event_loop().create_task(self.start_downloader(url, save_path, on_failure))
+            self.downloads[url] = asyncio.get_event_loop().create_task(self.start_downloader(url, save_path, on_failure, on_success))
         else:
             logging.debug('downloader for {} was called already'.format(url))
 
