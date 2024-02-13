@@ -1,5 +1,7 @@
 This script monitors RSS feeds and can send new entries as Jabber messages or execute pre-defined command against links in new messages on the feed. It designed specifically with Youtube RSS in mind, but might also work with other feeds.
 
+Development in this repository is now stopped in favor of rewrite in a separate progect, https://github.com/15532th/avtdl, allowing more flexible configuration and introducing support for monitoring additional sources.
+
 ## Installation
 
 It should work with Python version 3.6 and higher.
